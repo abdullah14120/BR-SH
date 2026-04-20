@@ -19,17 +19,11 @@ android {
             minifyEnabled false
         }
     }
-    
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-}
-
-// إضافة المستودعات هنا مباشرة داخل ملف التطبيق كحل أخير
-repositories {
-    google()
-    mavenCentral()
 }
 
 dependencies {
@@ -37,7 +31,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // مكتبات Shizuku 
+    // مكتبات Shizuku - سيتم جلبها الآن من mavenCentral المذكور في settings.gradle
     implementation "dev.rikka.shizuku:api:13.1.5"
     implementation "dev.rikka.shizuku:provider:13.1.5"
 }
