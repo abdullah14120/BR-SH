@@ -10,7 +10,6 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.*;
@@ -27,83 +26,89 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         etPackage = findViewById(R.id.et_package);
         tvLog = findViewById(R.id.tv_log);
-
-        // طلب إذن الملفات عند تشغيل التطبيق
         checkFilesPermission();
-        
-        initializeUI();
+        setupCards();
     }
 
-    private void initializeUI() {
-        // 1. زر إلغاء التثبيت
-        setupCommandCard(findViewById(R.id.card_uninstall), "حذف تطبيق", "حذف مع إبقاء البيانات (-k)", 
-            v -> executeSimpleCmd("pm uninstall -k " + getPackageNameInput()));
-
-        // 2. زر إعادة التشغيل
-        setupCommandCard(findViewById(R.id.card_reboot), "إعادة التشغيل", "إعادة تشغيل الجهاز فوراً", 
-            v -> executeSimpleCmd("reboot"));
-
-        // 3. زر النسخ الاحتياطي
-        setupCommandCard(findViewById(R.id.card_backup), "نسخ احتياطي AB", "إنشاء ملف aa.ab في الذاكرة", 
-            v -> performBackup(getPackageNameInput()));
-
-        // 4. زر الاستعادة
-        setupCommandCard(findViewById(R.id.card_restore), "استعادة بيانات AB", "استعادة من ملف aa.ab المحلي", 
-            v -> performRestore());
+    private void setupCards() {
+        setupCard(findViewById(R.id.card_uninstall), "حذف تطبيق", "حذف مع إبقاء البيانات (-k)", v -> executeCmd("pm uninstall -k " + getPkg()));
+        setupCard(findViewById(R.id.card_reboot), "إعادة التشغيل", "إعادة تشغيل فورية للجهاز", v -> executeCmd("reboot"));
+        setupCard(findViewById(R.id.card_backup), "نسخ احتياطي (AB)", "حفظ في Downloads/aa.ab", v -> startBackup(getPkg()));
+        setupCard(findViewById(R.id.card_restore), "استعادة (AB)", "استعادة من Downloads/aa.ab", v -> startRestore());
     }
 
-    private void setupCommandCard(View card, String title, String desc, View.OnClickListener action) {
-        ((TextView) card.findViewById(R.id.title)).setText(title);
-        ((TextView) card.findViewById(R.id.desc)).setText(desc);
-        card.findViewById(R.id.btn_action).setOnClickListener(action);
+    private void setupCard(View v, String title, String desc, View.OnClickListener l) {
+        ((TextView)v.findViewById(R.id.title)).setText(title);
+        ((TextView)v.findViewById(R.id.desc)).setText(desc);
+        v.findViewById(R.id.btn_action).setOnClickListener(l);
     }
 
-    private String getPackageNameInput() {
-        return etPackage.getText().toString().trim();
-    }
-
-    // --- نظام فحص الأذونات (الملفات و Shizuku) ---
+    private String getPkg() { return etPackage.getText().toString().trim(); }
 
     private void checkFilesPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                new MaterialAlertDialogBuilder(this)
-                    .setTitle("إذن الوصول للملفات")
-                    .setMessage("يحتاج التطبيق إلى إذن الوصول لجميع الملفات لحفظ واستعادة نسخ .ab بنجاح. يرجى تفعيله من الإعدادات.")
-                    .setPositiveButton("تفعيل الآن", (d, w) -> {
-                        try {
-                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                            intent.addCategory("android.intent.category.DEFAULT");
-                            intent.setData(Uri.parse(String.format("package:%s", getPackageName())));
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            Intent intent = new Intent();
-                            intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                            startActivity(intent);
-                        }
-                    })
-                    .setCancelable(false)
-                    .show();
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+            new MaterialAlertDialogBuilder(this).setTitle("إذن الملفات").setMessage("يرجى منح إذن الوصول للملفات").setPositiveButton("إعدادات", (d, w) -> {
+                Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                i.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(i);
+            }).show();
         }
     }
 
-    private boolean isSystemReady() {
-        // فحص Shizuku
-        if (!Shizuku.pingBinder()) {
-            showShizukuError("خدمة Shizuku متوقفة! يرجى تشغيلها أولاً.");
-            return false;
-        }
-        if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
-            Shizuku.requestPermission(100);
-            return false;
-        }
-        // فحص إذن الملفات في أندرويد 11+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
-            Toast.makeText(this, "يرجى منح إذن الوصول للملفات أولاً", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+    private boolean isReady() {
+        if (!Shizuku.pingBinder()) { showShizukuError(); return false; }
+        if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) { Shizuku.requestPermission(100); return false; }
         return true;
+    }
+
+    private void showShizukuError() {
+        new MaterialAlertDialogBuilder(this).setTitle("Shizuku مطلوب").setMessage("الخدمة لا تعمل").setPositiveButton("فتح", (d, w) -> {
+            startActivity(getPackageManager().getLaunchIntentForPackage("dev.rikka.shizuku"));
+        }).show();
+    }
+
+    private void executeCmd(String cmd) {
+        if (!isReady()) return;
+        try {
+            ShizukuShell.newProcess(new String[]{"sh", "-c", cmd}, null, null);
+            log("Executed: " + cmd);
+        } catch (Exception e) { log("Error: " + e.getMessage()); }
+    }
+
+    private void startBackup(String pkg) {
+        if (!isReady()) return;
+        new Thread(() -> {
+            try {
+                File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "aa.ab");
+                ShizukuRemoteProcess p = ShizukuShell.newProcess(new String[]{"sh", "-c", "bu backup -noapk " + pkg}, null, null);
+                InputStream is = p.getInputStream();
+                FileOutputStream fos = new FileOutputStream(f);
+                byte[] buf = new byte[16384]; int len;
+                while ((len = is.read(buf)) != -1) fos.write(buf, 0, len);
+                fos.close(); is.close();
+                runOnUiThread(() -> log("Saved to Downloads/aa.ab"));
+            } catch (Exception e) { runOnUiThread(() -> log("Fail: " + e.getMessage())); }
+        }).start();
+    }
+
+    private void startRestore() {
+        if (!isReady()) return;
+        new Thread(() -> {
+            try {
+                File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "aa.ab");
+                if (!f.exists()) { runOnUiThread(() -> log("File not found")); return; }
+                ShizukuRemoteProcess p = ShizukuShell.newProcess(new String[]{"sh", "-c", "bu restore"}, null, null);
+                OutputStream os = p.getOutputStream();
+                FileInputStream fis = new FileInputStream(f);
+                byte[] buf = new byte[16384]; int len;
+                while ((len = fis.read(buf)) != -1) os.write(buf, 0, len);
+                os.flush(); os.close(); fis.close();
+                runOnUiThread(() -> log("Restore started... Check Screen."));
+            } catch (Exception e) { runOnUiThread(() -> log("Fail: " + e.getMessage())); }
+        }).start();
+    }
+
+    private void log(String m) { runOnUiThread(() -> tvLog.append("\n> " + m)); }
+} // القوس الأخير الذي كان مفقوداً!
