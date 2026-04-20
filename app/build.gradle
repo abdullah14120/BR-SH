@@ -1,37 +1,28 @@
-plugins {
-    id 'com.android.application'
-}
+apply plugin: 'com.android.application'
 
 android {
+    compileSdk 33 // إصدار مستقر جداً
     namespace 'com.backup.restore.sh'
-    compileSdk 34
 
     defaultConfig {
         applicationId "com.backup.restore.sh"
         minSdk 26
-        targetSdk 34
+        targetSdk 33
         versionCode 1
         versionName "1.0"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-        }
-    }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-    // مكتبات Shizuku - سيتم جلبها الآن من mavenCentral المذكور في settings.gradle
-    implementation "dev.rikka.shizuku:api:13.1.5"
-    implementation "dev.rikka.shizuku:provider:13.1.5"
+    implementation 'com.google.android.material:material:1.8.0'
+    
+    // Shizuku ستعمل هنا بامتياز
+    implementation "dev.rikka.shizuku:api:13.1.0"
+    implementation "dev.rikka.shizuku:provider:13.1.0"
 }
