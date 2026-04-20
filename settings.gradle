@@ -1,19 +1,2 @@
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    // PREFER_SETTINGS تضمن أن Gradle سيعتمد على المستودعات المذكورة هنا فقط ويحل التعارض
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        google()
-        mavenCentral() // ضروري جداً لجلب مكتبة Shizuku
-    }
-}
-
 rootProject.name = "BR-SH"
 include ':app'
-
