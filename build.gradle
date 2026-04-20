@@ -1,22 +1,16 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// ملف build.gradle (الرئيسي - Root)
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        // استخدام إصدار مستقر يتوافق مع Gradle 9
+        // تعريف إصدار محرك أندرويد المتوافق مع جافا 21 وجرادل 9
         classpath 'com.android.tools.build:gradle:8.7.0'
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
+// هذه المهمة لتنظيف المجلدات المؤقتة عند بناء المشروع من جديد
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
