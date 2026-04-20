@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
@@ -9,6 +9,7 @@
 
     <application
         android:allowBackup="true"
+        android:icon="@android:drawable/sym_def_app_icon"
         android:label="System Manager Pro"
         android:theme="@style/Theme.Material3.DayNight"
         android:supportsRtl="true">
@@ -29,4 +30,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
