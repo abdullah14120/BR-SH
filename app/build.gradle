@@ -19,7 +19,7 @@ android {
             minifyEnabled false
         }
     }
-
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -27,11 +27,12 @@ android {
 }
 
 dependencies {
+    // المكتبات الأساسية
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // مكتبات Shizuku - استخدمنا إصداراً مستقراً ومعروفاً
+    // مكتبات Shizuku (هذا هو الجزء المفقود الذي يسبب الخطأ)
     implementation "dev.rikka.shizuku:api:13.1.5"
     implementation "dev.rikka.shizuku:provider:13.1.5"
 }
