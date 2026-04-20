@@ -26,13 +26,18 @@ android {
     }
 }
 
+// إضافة المستودعات هنا مباشرة داخل ملف التطبيق كحل أخير
+repositories {
+    google()
+    mavenCentral()
+}
+
 dependencies {
-    // المكتبات الأساسية
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // مكتبات Shizuku (هذا هو الجزء المفقود الذي يسبب الخطأ)
+    // مكتبات Shizuku 
     implementation "dev.rikka.shizuku:api:13.1.5"
     implementation "dev.rikka.shizuku:provider:13.1.5"
 }
