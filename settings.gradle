@@ -6,11 +6,10 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
-    // هذه الخاصية تضمن أن المشروع يسحب المكتبات من هنا فقط
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        mavenCentral() // ضروري جداً لمكتبة Shizuku
+        mavenCentral() // ضروري جداً لتحميل مكتبة Shizuku
     }
 }
 
