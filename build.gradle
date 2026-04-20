@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         // تعريف إصدار أداة بناء الأندرويد (Android Gradle Plugin)
-        classpath 'com.android.tools.build:gradle:9.1.1'
+        classpath 'com.android.tools.build:gradle:9.4.1'
     }
 }
 
