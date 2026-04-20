@@ -6,11 +6,13 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
+    // هذه الخاصية تضمن أن المشروع يسحب المكتبات من هنا فقط
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        mavenCentral()
+        mavenCentral() // ضروري جداً لمكتبة Shizuku
     }
 }
+
 rootProject.name = "BR-SH"
 include ':app'
