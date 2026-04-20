@@ -6,11 +6,11 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
-    // تغيير هذه القيمة إلى PREFER_SETTINGS أو PREFER_PROJECT
+    // PREFER_SETTINGS تضمن أن Gradle سيعتمد على المستودعات المذكورة هنا فقط ويحل التعارض
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
-        mavenCentral()
+        mavenCentral() // ضروري جداً لجلب مكتبة Shizuku
     }
 }
 
