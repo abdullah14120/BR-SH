@@ -1,28 +1,49 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdk 33 // إصدار مستقر جداً
+    // التأكد من أن الـ Namespace يطابق الكود المكتوب في MainActivity
     namespace 'com.backup.restore.sh'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.backup.restore.sh"
         minSdk 26
-        targetSdk 33
+        targetSdk 34 // متوافق مع متطلبات متجر جوجل وأحدث أنظمة أندرويد
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        // تحديث للإصدار 17 ليتوافق مع إعدادات GitHub Actions الجديدة
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
+    // المكتبات الأساسية لواجهة المستخدم
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
-    
-    // Shizuku ستعمل هنا بامتياز
-    implementation "dev.rikka.shizuku:api:13.1.0"
-    implementation "dev.rikka.shizuku:provider:13.1.0"
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // مكتبات Shizuku (التي تسبب المشكلة الحالية)
+    // تم اختيار إصدارات مستقرة تتوافق مع Gradle 7.5 و Java 17
+    implementation "dev.rikka.shizuku:api:13.1.5"
+    implementation "dev.rikka.shizuku:provider:13.1.5"
+
+    // مكتبات الاختبار (تلقائية)
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
