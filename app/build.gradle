@@ -1,32 +1,44 @@
 plugins {
+    // تعريف أن هذا المديول هو تطبيق أندرويد
     id 'com.android.application'
 }
 
 android {
+    // اسم الحزمة الذي اخترته
     namespace 'com.backup.restore.sh'
     compileSdk 34
 
     defaultConfig {
         applicationId "com.backup.restore.sh"
-        minSdk 26
+        minSdk 26 // الحد الأدنى لإصدار أندرويد (أندرويد 8) لضمان توافق Shizuku
         targetSdk 34
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            // تعطيل تصغير الكود حالياً لتجنب مشاكل الـ ProGuard أثناء التجربة
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
+    // المكتبات الأساسية لواجهة المستخدم
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    
-    // Shizuku
+
+    // مكتبات Shizuku (المحرك الأساسي لعمل التطبيق)
     def shizuku_version = "13.1.0"
     implementation "dev.rikka.shizuku:api:$shizuku_version"
     implementation "dev.rikka.shizuku:provider:$shizuku_version"
