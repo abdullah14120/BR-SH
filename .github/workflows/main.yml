@@ -1,11 +1,10 @@
-name: Build Android APK (Stable Mode)
+name: Build Android APK (Legacy Fix)
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  # يسمح لك بتشغيل البناء يدوياً من تبويب Actions
   workflow_dispatch: 
 
 jobs:
@@ -16,27 +15,26 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: '11'
+        java-version: '17' # استخدام 17 لإرضاء النظام وتشغيل Gradle الأساسي
         distribution: 'temurin'
         cache: gradle
 
-    # توليد ملفات الـ Wrapper للإصدار المستقر 7.5
+    # توليد الـ Wrapper القديم باستخدام Java 17
     - name: Generate Gradle Wrapper
       run: gradle wrapper --gradle-version 7.5
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    # تشغيل عملية البناء
+    # الآن تشغيل البناء باستخدام الـ Wrapper الذي تم توليده
     - name: Build with Gradle
       run: ./gradlew assembleDebug
 
-    # رفع ملف الـ APK الناتج
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: BR-SH-Stable-Build
+        name: BR-SH-Final-Build
         path: app/build/outputs/apk/debug/app-debug.apk
