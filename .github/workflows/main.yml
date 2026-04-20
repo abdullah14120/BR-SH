@@ -1,9 +1,7 @@
-name: Build Android APK (Legacy Fix)
+name: Build Android APK (Direct Mode)
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
   workflow_dispatch: 
 
@@ -18,23 +16,10 @@ jobs:
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: '17' # استخدام 17 لإرضاء النظام وتشغيل Gradle الأساسي
+        java-version: '17'
         distribution: 'temurin'
         cache: gradle
 
-    # توليد الـ Wrapper القديم باستخدام Java 17
-    - name: Generate Gradle Wrapper
-      run: gradle wrapper --gradle-version 7.5
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
-    # الآن تشغيل البناء باستخدام الـ Wrapper الذي تم توليده
+    # سنستخدم 'gradle' المثبت مسبقاً في النظام مباشرة بدلاً من './gradlew'
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: BR-SH-Final-Build
-        path: app/build/outputs/apk/debug/app-debug.apk
+      run: gradle assembleDebug
