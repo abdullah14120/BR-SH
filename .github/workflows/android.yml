@@ -11,23 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-    - name: set up JDK 21
+    - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: gradle
 
+    # هذه الخطوة ستقوم بإنشاء ملفات الـ Wrapper المفقودة (gradlew و gradle-wrapper.jar)
+    - name: Generate Gradle Wrapper
+      run: gradle wrapper --gradle-version 9.4.1
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    # تشغيل عملية البناء لتوليد ملف الـ APK
     - name: Build with Gradle
       run: ./gradlew assembleDebug
 
-    - name: Upload APK
+    # رفع الملف الناتج (APK) ليكون متاحاً للتحميل من تبويب Actions
+    - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: SystemManager-Debug
+        name: SystemManager-BR-SH
         path: app/build/outputs/apk/debug/app-debug.apk
