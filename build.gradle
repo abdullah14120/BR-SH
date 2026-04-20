@@ -4,18 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // إصدار مستقر جداً ولا يتطلب تعقيدات Java 21
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        // هذا الإصدار متوافق مع Gradle 8 و 9 و 7
+        classpath 'com.android.tools.build:gradle:8.2.0'
     }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }
